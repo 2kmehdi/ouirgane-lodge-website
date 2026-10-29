@@ -24,3 +24,6 @@ desktop.ini
 *.zip
 
 dist/
+
+push-photos.ps1
+push-remaining.mjs
