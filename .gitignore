@@ -1,0 +1,26 @@
+# Dependencies — never commit node_modules
+node_modules/
+
+# Temp / unrelated system folders
+Temp/
+temp/
+TxGameDownload/
+
+# Dev tools
+*.log
+*.tmp
+compress-images.mjs
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+
+# Zip packages
+*.zip
+
+dist/
