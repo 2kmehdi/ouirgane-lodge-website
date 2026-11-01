@@ -1,31 +1,106 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, Asterisk, MapPin } from "lucide-react";
 import { BOOKING_URL, COORDS, IMG } from "../data/lodge";
 import { ArrowButton, RatingSticker } from "./Decor";
 import { EASE, SplitWords } from "./Motion";
 import { Ticker } from "./Ticker";
 
+const HERO_SLIDES = [
+  {
+    src: "/lodge-photos/IMG_6929.JPG",
+    title: "Ouirgane Lake & High Atlas Panorama",
+    alt: "Panoramic view of Ouirgane turquoise lake and High Atlas mountains",
+  },
+  {
+    src: "/lodge-photos/IMG_6926.JPG",
+    title: "Terrace Pool Overlooking the Lake",
+    alt: "Year-round outdoor swimming pool with panoramic lake view",
+  },
+  {
+    src: "/lodge-photos/tea-terrace.jpg",
+    title: "High Atlas Mint Tea Ceremony",
+    alt: "Moroccan mint tea ceremony with lake and mountain view",
+  },
+  {
+    src: "/lodge-photos/cook-tagine.jpg",
+    title: "Wood-Fired Berber Tagines",
+    alt: "Authentic wood-fired tagines simmering on the terrace",
+  },
+  {
+    src: "/lodge-photos/IMG_6951.JPG",
+    title: "Lakeside Sun Terrace & Horizon",
+    alt: "Lakeside sun loungers and mountain reflections",
+  },
+  {
+    src: "/lodge-photos/bike-ridges.jpg",
+    title: "Mountain Biking High Atlas Ridges",
+    alt: "Mountain bike overlooking the turquoise lake and Atlas peaks",
+  },
+  {
+    src: "/lodge-photos/room-deluxe-quad.jpg",
+    title: "Artisanal Berber Rooms & Suites",
+    alt: "Spacious Berber quad room with handcrafted rugs and warm lighting",
+  },
+];
+
 export function Hero({ ready }: { ready: boolean }) {
+  const [currentSlide, setCurrentSlide] = useState(0);
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
   const bgScale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
   const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 5500);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section ref={ref} id="top" className="relative min-h-[100svh] overflow-hidden bg-night text-cream">
-      {/* backdrop */}
+      {/* backdrop animated slideshow */}
       <motion.div style={{ y: bgY, scale: bgScale }} className="absolute inset-0">
-        <img
-          src={IMG.hero}
-          alt="The Toubkal valley above Ouirgane, High Atlas"
-          className="h-full w-full animate-kenburns object-cover"
-          style={{ filter: "sepia(0.22) saturate(1.05) contrast(1.02) brightness(0.94)" }}
-        />
+        <AnimatePresence mode="popLayout">
+          <motion.img
+            key={HERO_SLIDES[currentSlide].src}
+            src={HERO_SLIDES[currentSlide].src}
+            alt={HERO_SLIDES[currentSlide].alt}
+            initial={{ opacity: 0, scale: 1.08 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+            className="h-full w-full object-cover"
+            style={{ filter: "sepia(0.18) saturate(1.08) contrast(1.02) brightness(0.92)" }}
+          />
+        </AnimatePresence>
       </motion.div>
-      <div className="absolute inset-0 bg-gradient-to-b from-night/70 via-night/10 to-night/80" />
-      <div className="absolute inset-0 bg-gradient-to-r from-night/45 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-night/75 via-night/15 to-night/85" />
+      <div className="absolute inset-0 bg-gradient-to-r from-night/55 via-night/10 to-transparent" />
+
+      {/* slide indicators & current frame title */}
+      <motion.div
+        style={{ opacity: fade }}
+        className="absolute bottom-16 right-6 z-20 hidden items-center gap-3 rounded-full border border-cream/20 bg-night/60 px-4 py-2 backdrop-blur-md md:flex md:right-12"
+      >
+        <span className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-sand">
+          {HERO_SLIDES[currentSlide].title}
+        </span>
+        <div className="flex items-center gap-1.5 pl-2 border-l border-cream/20">
+          {HERO_SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentSlide(i)}
+              className={`h-1.5 rounded-full transition-all duration-500 ${
+                currentSlide === i ? "w-6 bg-clay" : "w-1.5 bg-cream/35 hover:bg-cream/60"
+              }`}
+              aria-label={`Show slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      </motion.div>
 
       {/* top meta row */}
       <motion.div

@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { animate, motion, useInView } from "framer-motion";
 import { ArrowUpRight, Asterisk } from "lucide-react";
 import { cn } from "../utils/cn";
@@ -277,22 +277,23 @@ export function LocalTime({ className }: { className?: string }) {
 
 /* Count-up number on scroll into view */
 export function CountUp({ to, decimals = 0, className }: { to: number; decimals?: number; className?: string }) {
+  const [val, setVal] = useState<string>(to.toFixed(decimals));
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-10%" });
+  const inView = useInView(ref, { once: true, amount: 0.1 });
+
   useEffect(() => {
-    if (!inView || !ref.current) return;
+    if (!inView) return;
     const controls = animate(0, to, {
       duration: 1.6,
       ease: [0.22, 1, 0.36, 1],
-      onUpdate: (v) => {
-        if (ref.current) ref.current.textContent = v.toFixed(decimals);
-      },
+      onUpdate: (v) => setVal(v.toFixed(decimals)),
     });
-    return controls.stop;
+    return () => controls.stop();
   }, [inView, to, decimals]);
+
   return (
     <span ref={ref} className={className}>
-      0
+      {val}
     </span>
   );
 }

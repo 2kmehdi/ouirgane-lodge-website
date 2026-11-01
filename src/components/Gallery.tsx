@@ -36,23 +36,23 @@ export function Gallery() {
           <div>
             <ChapterHead
               no="04"
-              kicker="Photo Journal"
+              kicker="Field Note N°04 · Visual Archive"
               tone="light"
               title={
                 <>
-                  Thirty-five frames of <em className="font-light italic text-sand">real life</em> above the lake.
+                  Thirty-nine frames of <em className="font-light italic text-sand">real life</em> above the lake.
                 </>
               }
             />
             <Reveal delay={0.15} className="mt-4 max-w-xl text-[15px] leading-relaxed text-cream/70">
               Unfiltered, genuine moments at Ouirgane Discovery Lodge. From the turquoise waters of our terrace pool
-              to the cedar-scented bedrooms and quiet evening tea under the Atlas stars.
+              to the cedar-scented bedrooms, freshly baked bread, wood-fired tagines, and quiet mint tea overlooking Ouirgane Lake.
             </Reveal>
           </div>
 
           <Reveal delay={0.25} className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-sand">
             <Camera className="h-4 w-4 text-clay" />
-            <span>35 Real Lodge Photographs</span>
+            <span>{LODGE_GALLERY.length} Real Lodge Photographs</span>
           </Reveal>
         </div>
 
@@ -82,18 +82,18 @@ export function Gallery() {
           ))}
         </div>
 
-        {/* Masonry-Style Responsive Grid */}
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {/* Editorial Photo Grid */}
+        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredPhotos.map((photo, i) => (
             <motion.div
               key={photo.src}
               layout
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10%" }}
-              transition={{ delay: (i % 6) * 0.06, duration: 0.5 }}
+              viewport={{ once: true, margin: "-5%" }}
+              transition={{ delay: (i % 6) * 0.05, duration: 0.5 }}
               onClick={() => setActiveIdx(i)}
-              className="group relative cursor-pointer overflow-hidden rounded-xl border border-cream/10 bg-night/80 shadow-lg"
+              className="group relative flex flex-col cursor-pointer overflow-hidden rounded-xl border border-cream/15 bg-night/90 shadow-xl transition-all duration-300 hover:border-clay/60 hover:-translate-y-1"
             >
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-night">
                 <img
@@ -102,22 +102,23 @@ export function Gallery() {
                   loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-night/95 via-night/30 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-90" />
-              </div>
-
-              {/* Hover Badge / Caption */}
-              <div className="absolute inset-x-0 bottom-0 p-4 transition-transform duration-300">
-                <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-clay">
+                <div className="absolute inset-0 bg-gradient-to-t from-night/80 via-transparent to-transparent opacity-40 transition-opacity duration-300 group-hover:opacity-60" />
+                <span className="absolute left-3 top-3 rounded bg-night/80 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.2em] text-clay backdrop-blur">
                   {photo.category}
                 </span>
-                <h3 className="font-display text-base font-medium text-cream">{photo.title}</h3>
-                <p className="mt-1 line-clamp-1 text-xs text-cream/70 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  {photo.desc}
-                </p>
+                <div className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-night/80 text-cream opacity-0 backdrop-blur transition-opacity duration-300 group-hover:opacity-100">
+                  <Eye className="h-4 w-4" />
+                </div>
               </div>
 
-              <div className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-night/70 text-cream opacity-0 backdrop-blur transition-opacity duration-300 group-hover:opacity-100">
-                <Eye className="h-4 w-4" />
+              {/* Verified Title & Caption Description */}
+              <div className="flex flex-1 flex-col justify-between p-4 bg-night/60 border-t border-cream/10">
+                <h3 className="font-display text-base font-medium text-cream leading-snug group-hover:text-sand transition-colors">
+                  {photo.title}
+                </h3>
+                <p className="mt-1.5 text-xs leading-relaxed text-cream/70 line-clamp-2">
+                  {photo.desc}
+                </p>
               </div>
             </motion.div>
           ))}
